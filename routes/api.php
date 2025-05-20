@@ -29,16 +29,18 @@ use App\Http\Controllers\Api\TestController;
 
 // API routes
 Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware([\App\Http\Middleware\VerifyCsrfToken::class]);
+Route::apiResource('attendees', AttendeeController::class);
+Route::post('/attendees', [AttendeeController::class, 'store']);
+Route::put('/attendees/{id}', [AttendeeController::class, 'update']);
+Route::delete('/attendees/{id}', [AttendeeController::class, 'destroy']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('events', EventController::class);
-    Route::apiResource('attendees', AttendeeController::class);
+  
     Route::apiResource('bookings', AttendeeController::class);
 
-    Route::post('/attendees', [AttendeeController::class, 'store']);
-    Route::put('/attendees/{id}', [AttendeeController::class, 'update']);
-    Route::delete('/attendees/{id}', [AttendeeController::class, 'destroy']);
+    
     Route::post('/events', [EventController::class, 'store']);
     Route::put('/events/{id}', [EventController::class, 'update']);
     Route::delete('/events/{id}', [EventController::class, 'destroy']);
