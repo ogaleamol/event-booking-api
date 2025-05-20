@@ -27,21 +27,35 @@ class EventController extends Controller {
         return $event->load('country');
     }
 
-    public function update(Request $request, Event $event) {
-        $data = $request->validate([
-            'title' => 'sometimes|string',
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|numeric',
+            'title' => 'nullable|string',
             'description' => 'nullable|string',
-            'start_time' => 'sometimes|date',
-            'end_time' => 'sometimes|date|after:start_time',
-            'country_id' => 'sometimes|exists:countries,id',
-            'capacity' => 'sometimes|integer|min:1',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'capacity' => 'required|numeric',
+            'country_id' => 'required|numeric',
         ]);
-        $event->update($data);
-        return $event;
+
+        $event = Event::findOrFail($id);
+        $event->update($validated);
+
+        return response()->json($event);
     }
 
-    public function destroy(Event $event) {
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id)
+    {
+        $event = Event::findOrFail($id);
         $event->delete();
-        return response()->json(['message' => 'Event deleted']);
+
+        return response()->json(null, 204);
     }
 }

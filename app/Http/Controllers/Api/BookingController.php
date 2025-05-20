@@ -7,14 +7,32 @@ use App\Models\Booking;
 use App\Models\Event;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(
+ *     title="Event Booking API",
+ *     version="1.0.0",
+ *     description="This is the API documentation for the Event Booking system.",
+ *     @OA\Contact(
+ *         email="support@example.com"
+ *     )
+ * )
+ */
 class BookingController extends Controller {
     public function store(Request $request) {
-        $data = $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'attendee_id' => 'required|exists:attendees,id',
-        ]);
+        try {
+            $data = $request->validate([
+                'event_id' => 'required|exists:events,id',
+                'attendee_id' => 'required|exists:attendees,id',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'Event or attendee dosent exist or validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        }
 
         $event = Event::find($data['event_id']);
+
 
         $existing = Booking::where('event_id', $event->id)
                             ->where('attendee_id', $data['attendee_id'])
