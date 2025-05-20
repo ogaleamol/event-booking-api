@@ -157,7 +157,7 @@ Refer to `mysql_schema_diagram.png` or Laravel migration files for detailed tabl
 
 1. **Clone Repo**
    ```bash
-   git clone https://github.com/yourusername/event-booking-api.git
+   git clone git@github.com:ogaleamol/event-booking-api.git
    cd event-booking-api
    ```
 
