@@ -1,61 +1,208 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Event Booking API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A RESTful API built using **Laravel 12.14.1** (PHP 8.2) to manage event bookings with support for event and attendee management, booking logic, validation, authentication structure, and clean database design.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Event Management**: Create, update, list, and delete events.
+- **Attendee Management**: Register and manage attendees.
+- **Booking System**: Book events while preventing overbooking and duplicate bookings.
+- **Validation & Error Handling**: Ensures proper request validation and meaningful error responses.
+- **Authentication Support**: Token-based authentication (sanctum/personal access tokens).
+- **Clean Architecture**: Follows MVC pattern, uses design patterns like Singleton and Factory.
+- **Structured JSON Responses**.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠 Tech Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- **PHP** 8.2
+- **Laravel** 12.14.1
+- **MySQL**
+- Laravel Sanctum (for token-based authentication)
+- PHPUnit (tests, WIP)
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 📂 API Endpoints
 
-## Laravel Sponsors
+### 🔐 Authentication
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+| Method | Endpoint              | Description |
+|--------|-----------------------|-------------|
+| POST   | `/api/login`          | Login and receive Bearer Token |
 
-### Premium Partners
+**Sample Request**
+```json
+{
+  "email": "amol@example.com",
+  "password": "password123"
+}
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+**Response**
+```json
+{
+  "token": "Bearer TOKEN_STRING_HERE",
+  "user": {
+    "id": 1,
+    "name": "Amol Ogale",
+    "email": "amol@example.com"
+  }
+}
+```
 
-## Contributing
+> Use the `token` in Authorization header as:  
+> `Authorization: Bearer YOUR_TOKEN`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### 📅 Events
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Method | Endpoint               | Description        |
+|--------|------------------------|--------------------|
+| GET    | `/api/events/`         | List all events    |
+| POST   | `/api/events/`         | Create new event   |
+| PUT    | `/api/events/{id}`     | Update event       |
+| DELETE | `/api/events/{id}`     | Delete event       |
 
-## Security Vulnerabilities
+**Sample Create/Update Request**
+```json
+{
+  "user_id": 1,
+  "title": "test event2",
+  "description": "An event for testing",
+  "start_time": "2025-06-01T09:00:00",
+  "end_time": "2025-06-01T17:00:00",
+  "country_id": 1,
+  "capacity": 100
+}
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+### 👤 Attendees
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Method | Endpoint                 | Description           |
+|--------|--------------------------|-----------------------|
+| GET    | `/api/attendees/`        | List all attendees    |
+| POST   | `/api/attendees/`        | Register attendee     |
+| PUT    | `/api/attendees/{id}`    | Update attendee       |
+| DELETE | `/api/attendees/{id}`    | Delete attendee       |
+
+**Sample Request**
+```json
+{
+  "name": "test1",
+  "email": "test2@mail.com"
+}
+```
+
+---
+
+### 📝 Bookings
+
+| Method | Endpoint               | Description          |
+|--------|------------------------|----------------------|
+| POST   | `/api/bookings/`       | Book an event        |
+
+**Sample Request**
+```json
+{
+  "event_id": 2,
+  "attendee_id": 2
+}
+```
+
+> ✅ Prevents duplicate bookings and overbooking based on event capacity.
+
+---
+
+## 🔐 Authentication & Authorization
+
+- Event Management endpoints require authentication via bearer token.
+- Attendee registration is **public** (no authentication needed).
+- Token is returned on login using Laravel Sanctum.
+- Future enhancement: Role-based access control (RBAC) to restrict actions by user role.
+
+---
+
+## 🧱 Database Schema
+
+Refer to `mysql_schema_diagram.png` or Laravel migration files for detailed table structure and relationships.
+
+---
+
+## ✅ Validations
+
+- All create/update requests are validated via Laravel Form Requests.
+- Custom logic to:
+  - Prevent overbooking
+  - Prevent duplicate bookings by same attendee
+
+---
+
+## ❌ Known Limitations
+
+- **Pagination & filtering**: Not implemented yet
+- **Swagger/Postman Docs**: Partial (attendee only), not fully tested
+- **Testing**: Unit tests attempted but not successful
+- **Docker**: Not included; Laravel dependencies handled via Composer
+
+---
+
+## 🧪 Setup Instructions
+
+1. **Clone Repo**
+   ```bash
+   git clone https://github.com/yourusername/event-booking-api.git
+   cd event-booking-api
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   composer install
+   ```
+
+3. **Setup Environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+
+4. **Configure Database**
+   - Edit `.env` file with your DB credentials
+
+5. **Run Migrations**
+   ```bash
+   php artisan migrate
+   ```
+
+6. **Run Application**
+   ```bash
+   php artisan serve
+   ```
+
+---
+
+## 🧠 Design Patterns Used
+
+- **MVC**: Laravel architectural standard
+- **Singleton**: For service container bindings
+- **Factory**: For model creation (seeding, factories)
+
+---
+
+## 👨‍💻 Author
+
+**Amol V. Ogale**  
+Zend Certified PHP Engineer  
+[LinkedIn](#) | [GitHub](https://github.com/yourusername)
+
+---
+
+## 📄 License
+
+MIT License – see `LICENSE` file for details.
